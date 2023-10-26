@@ -2,14 +2,13 @@ import base64
 import hashlib
 import json
 import os
-import random
-import requests
 import sys
 import time
-
+import random
+import storyline #Remove this line when finalizing game
 from replit import audio
 
-from variables import title, audio_titles
+from variables import title, audio_titles, help_text, quit_text, death_text
 
 
 
@@ -45,10 +44,9 @@ if hashlib.sha256(encoded.encode()).hexdigest().upper() != hash:
 decoded = base64.b64decode(base64.b64decode(encoded.encode())).decode()
 decoded = json.loads(decoded)
 story = decoded
-  
-time.sleep(0.1)
+print("Loaded story")
+time.sleep(1)
 clr()
-
 
 
 
@@ -86,6 +84,7 @@ while True:
     src = audio.play_file(audio_files["title"])
     break
   except TimeoutError:
+    print("Retrying audio...")
     if error_count+1 == 3:
       print("Failed to start title audio track.")
       exit(1)
@@ -110,10 +109,18 @@ clr()
 
 inventory = []
 path = story["path"]
+saved_path = ""
 ending_1 = 0
 ending_2 = 0
 ending_3 = 0
 disallowed_decisions = ["required_item","first_entry","first_entry_text","actions","go_back_not_allowed","text","inventory"] #All the hidden fields of a room that the user should not be able to access.
+
+
+
+
+def finale(ending_1,ending_2,ending_3):
+  pass
+
 
 while True:
   game_path = path.split("-")
@@ -155,6 +162,7 @@ while True:
     ending_1 += storyline["ending_3"]
     storyline["ending_3"] = 0
   
+  
   clr()
   #Checks for a first_entry tag, if it's the players first time entering, print the special text instead of the normal text
   try:
@@ -164,19 +172,32 @@ while True:
     else:
       print(storyline["text"])
       
-  except Exception as e: #If there is no special text, just print the regular text.
+  except: #If there is no special text, just print the regular text.
     print(storyline["text"])
-    
+  if "game_over" in storyline:
+    time.sleep(2)
+    clr()
+    rem_print("GAME OVER")
+    print(random.choice(death_text))
+    time.sleep(1)
+    exit()
   
   #Decision switching logic
   decision = ""
   while True:
     decision = input(">")
-    if decision == "ENDING LOGIC GOES HERE" and "ENDING ITEM GOES HERE" in inventory:
-      from ending import finale
+    if decision == "quit":
+      print(random.choice(quit_text))
+      exit(0)
+    if decision == "":
+      continue
+    elif decision == "help" or decision == "h":
+      for line in help_text:
+        print(line)
+    elif decision == "ENDING LOGIC GOES HERE" and "ENDING ITEM GOES HERE" in inventory:
       finale(ending_1,ending_2,ending_3)
     
-    if decision == "back" and "go_back_not_allowed" not in storyline:
+    elif decision == "back" and "go_back_not_allowed" not in storyline:
       #Remove the last decision made by the player
       path = "-".join(path.split("-")[:-1])
       

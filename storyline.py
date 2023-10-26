@@ -81,10 +81,9 @@ R-"text": provides the text the user recieves when entering the room
 
 
 assignMode = True #Whether or not to be updating encrypted.txt
-deployMode = True #Whether or not to be decrypting encrypted.txt
 if assignMode is True:
   dumped = json.dumps(story)
-  encoded = base64.b64encode(base64.b64encode(base64.b64encode(dumped.encode())).decode()
+  encoded = base64.b64encode(base64.b64encode(dumped.encode())).decode()
   with open("encrypted.txt","w") as file:
     file.write(encoded+"."+hashlib.sha256(encoded.encode()).hexdigest().upper())
   
