@@ -5,7 +5,7 @@ import os
 import sys
 import time
 import random
-import storyline #Remove this line when finalizing game
+import storyline #Remove this line when finalizing game, serves to reencode storyline each time the main game is run
 from replit import audio
 
 from variables import title, audio_titles, help_text, quit_text, death_text
@@ -14,7 +14,7 @@ from variables import title, audio_titles, help_text, quit_text, death_text
 
 
 
-def clr():os.system("clear")
+def clr():os.system("clear")#A lot better than last years lol
 
 
 #Load audio files
@@ -29,11 +29,11 @@ for item in audio_titles:
   i+=1
   if not os.path.isfile(f"./music/{item}.mp3"):
     print(f"AUDIO FILE NOT FOUND:{item}.mp3")
-    exit()
+    exit()#This will crash the game later so crash it now
   audio_files[item] = f"./music/{item}.mp3"
   print(f"Loaded track {i}/{len(audio_titles)}: {item}.mp3")
 
-
+#Double b64 encryption with a sha256checksum at the end, for both the story and main code.
 with open("encrypted.txt","r") as file:
   encoded = file.read()
 encoded = encoded.split(".")
@@ -51,7 +51,7 @@ clr()
 
 
 
-rprint = print
+rprint = print #Just in case we need to utilize regular print for some reason.
 
 def print(t,typing_speed=0.05):
   for char in t+"\n":
@@ -60,7 +60,7 @@ def print(t,typing_speed=0.05):
     time.sleep(typing_speed)
 
 def rem_print(t,typing_speed=0.05):
-
+  """Slow prints a SINGLE line of text, and then removes it all one by one."""
   for char in t:
     sys.stdout.write(char)
     sys.stdout.flush()
@@ -95,6 +95,9 @@ while True:
 for line in title:
   rprint(line)
   time.sleep(0.3)
+print("Commands:")
+for command in help_text:
+  print(command)
 input("\n\n\nPress enter to continue...")
 src.paused = True#pause title music
 
@@ -107,7 +110,7 @@ clr()
 
 
 
-inventory = []
+inventory = {}
 path = story["path"]
 saved_path = ""
 ending_1 = 0
@@ -119,7 +122,7 @@ disallowed_decisions = ["required_item","first_entry","first_entry_text","action
 
 
 def finale(ending_1,ending_2,ending_3):
-  pass
+  pass #TODO
 
 
 while True:
@@ -134,7 +137,7 @@ while True:
       rem_print(storyline["text"])
     else:
       print(storyline["text"])
-    path += "-"+storyline["auto"]
+    path += "-"+storyline["auto"]#go to next room specified by auto
     time.sleep(3)
     clr()
     continue
@@ -144,7 +147,7 @@ while True:
       rem_print(storyline["text"])
     else:
       print(storyline["text"])
-    path = storyline["clear"]
+    path = storyline["clear"]#Clears story line and go to whatever path specified
     time.sleep(3)
     clr()
     continue
@@ -152,6 +155,8 @@ while True:
     src = audio.play_file(audio_files[storyline["audio"]])
   else:
     src.paused = True
+
+  #Karma handling
   if "ending_1" in storyline:
     ending_1 += storyline["ending_1"]
     storyline["ending_1"] = 0
@@ -172,7 +177,8 @@ while True:
     else:
       print(storyline["text"])
       
-  except: #If there is no special text, just print the regular text.
+  except: 
+    #If there is no special text, just print the regular text.
     print(storyline["text"])
   if "game_over" in storyline:
     time.sleep(2)
@@ -189,11 +195,13 @@ while True:
     if decision == "quit":
       print(random.choice(quit_text))
       exit(0)
+    #ignore empty decisions
     if decision == "":
       continue
     elif decision == "help" or decision == "h":
       for line in help_text:
         print(line)
+    #TODO
     elif decision == "ENDING LOGIC GOES HERE" and "ENDING ITEM GOES HERE" in inventory:
       finale(ending_1,ending_2,ending_3)
     
@@ -204,13 +212,18 @@ while True:
       break
       
     elif ("take" in decision or "get" in decision or "receive" in decision) and " ".join(decision.split(" ")[1:]) in storyline["inventory"]:
-      inventory.append(" ".join(decision.split(" ")[1:]))
-      storyline["inventory"].remove(" ".join(decision.split(" ")[1:]))
-      print(f"You got the {' '.join(decision.split(' ')[1:])}")
+      itm = " ".join(decision.split(" ")[1:])
+      inventory[itm] = storyline["inventory"].pop(itm)
+      print(f"You got the {itm}")
       
     elif decision == "inventory":
-      print("You are currently carrying:\n"+'\n'.join(inventory))
-    
+      print("You are currently carrying:\n"+'\n'.join(inventory.keys()))
+    elif "inspect" in decision and " ".join(decision.split(" ")[1:]) in inventory:
+      itm = " ".join(decision.split(" ")[1:])
+      if "inspect_text" in inventory[itm]:
+        print(inventory[itm]["inspect_text"])
+      else:
+        print(f"Just a regular {itm}.")
     elif decision in storyline and decision not in disallowed_decisions:
       if "required_item" in storyline[decision]:
         if storyline[decision]["required_item"] not in inventory:

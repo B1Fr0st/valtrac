@@ -1,6 +1,6 @@
 import base64,hashlib
 
-
+#Delete this after game is finalized, or comment it out.
 with open('main.py','r') as file:
   string = file.read()
 encoded = base64.b64encode(base64.b64encode(base64.b64encode(string.encode()))).decode()

@@ -42,7 +42,7 @@ story = {
         "text":"You walk up to the solid plexiglass separating you from the guard.\n\nDIALOGUE OPTIONS:\n[make small talk]\n[kill him]\n[stay silent]",
         "stay silent":{
           "clear":"ch1-ch1_02",
-          "text":"tbd"
+          "text":"You decide that you'll stay silent no matter what he says."
         },
         "kill him":{
           "clear":"ch1-ch1_02",
@@ -69,7 +69,7 @@ story = {
 """Guide to editing the story:
 Each dictionary is a "room". Specifications:
 R-"text": provides the text the user recieves when entering the room
-"inventory: provides items that can be taken from that room
+"inventory: provides items that can be taken from that room, which are dictionaries.
 "required_item": tag that only allows the player into the room if they have the item
 "first_entry": tag that indicates whether or not this is the players first time entering this room.
 "first_entry_text": if the player enters while first_entry is true, print first_entry_text instead of the regular text.
@@ -77,10 +77,11 @@ R-"text": provides the text the user recieves when entering the room
 "auto": Tag that indicates whether or not the room will automatically proceed to the next, and what the next room is named.
 "clear": Clears the path and sets the path to whatever the value of clear is.
 "header": Whether or not to use rem_print on the text. Only checked for if "clear" or "auto" is also a tag.
+"game_over": Ends the game.
 """
 
 
-assignMode = True #Whether or not to be updating encrypted.txt
+assignMode = True #Whether or not to be updating encrypted.txt, should always be true
 if assignMode is True:
   dumped = json.dumps(story)
   encoded = base64.b64encode(base64.b64encode(dumped.encode())).decode()
