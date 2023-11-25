@@ -84,7 +84,7 @@ story = {
         "ask it politely to open":{
           "auto":"narrator_opening",
           "ending_1":1,#Idiotic approach
-          "text":"You straighten up, throw a mint in your mouth, and put on your best charming smile.\n\n'Hey there, I don't wanna inconvenience you, but could you possibly open the door for me?'\nYou get the sense of the door blushing as well as a door can blush.\nThe door quickly slides all the way open, and you saunter on through.",
+          "text":"You straighten up, throw a mint in your mouth, and put on your best charming smile.\n\n'Hey there, I don't wanna inconvenience you, but could you possibly open for me?'\nYou get the sense of the door blushing as well as a door can blush.\nThe door quickly slides all the way open, and you saunter on through.",
           "narrator_opening":{
             "clear":"ch1-ch1_03",
             "text":Fore.LIGHTBLUE_EX+"You... asked it politely? IN WHAT SCREWED UP WORLD DOES THAT WORK?!?"
@@ -98,9 +98,27 @@ story = {
         
       }
     },
+    #Outline:
+    #massive room, skylights, console in the middle
+    #you can go left, right, or forward
+    #mini-puzzle in a room that gives you the item you need
+    #redirect to a room where there's just the console option on screen
+    #redirect to ending, end of demo.
+    #
     "ch1_03":{
       "go_back_not_allowed":0,
-      "text":""
+      "text":"You walk into a massive room, with rain beating down on massive skylights overhead.\nThere's doors to the left, right, and front, and a black obelisk console in the middle of the room.",
+      "left":{
+        "text":"You walk into a small, darkened room. There's a single lightbulb hanging from the ceiling, and a small table in the middle of the room.\nOn the table, there's a small box with a keypad on it. Try opening it.",
+
+      },
+      "right":{
+
+      },
+      "forward":{
+
+      },
+
     },
     "ch2_01":{
       
